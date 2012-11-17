@@ -1,0 +1,28 @@
+<div class="registro">
+	<h1>Registro de usuarios</h1>
+
+	<form id="form-registro" action="/registro/index/crear/" method="post">
+		<div class="inputs">
+	 		<input type="text" class="span12" name="email" placeholder="Email" />
+	 		<input type="password" class="span12" name="clave" placeholder="Contraseña" />
+	 		<input type="text" class="span12" name="nombres" placeholder="Nombre" />
+	 	</div>
+
+ 		<div class="radios">
+	 		<label class="radio">
+	 			<input type="radio" name="genero" value="m">
+	 			Hombre
+	 		</label>
+	 		<label class="radio">
+	 			<input type="radio" name="genero" value="f">
+	 			Mujer
+	 		</label>
+	 	</div>
+	 	<div class="clearfix"></div>
+                
+ 		
+
+ 		<input type="submit" class="btn btn-large btn-medicamento" value="Resgistrarme" />
+	</form>
+	<div class="info">Si ya posee una cuenta debe <a href="/registro/index/login/">Iniciar sesion</a></div>
+</div>

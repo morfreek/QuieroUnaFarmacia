@@ -1,0 +1,9 @@
+<h1>Listado de Farmacias</h1>
+<?php foreach($this->listado_farmacias as $farmacia){ ?>
+    <h3><?php echo $farmacia->nombre?> <?php if($farmacia->indicador_turno) echo '(Farmacia de Turno)';?></h3>
+    <p><?php echo $farmacia->id?></p>
+    <p><?php echo $farmacia->direccion?></p>
+    <p><?php echo $farmacia->numero_comentarios?> Comentario(s)</p>
+    <p><?php echo $farmacia->numero_denuncias?> Denuncia(s)</p>
+    <p>Nota: <?php echo $farmacia->nota_final?></p>
+<?php } ?>

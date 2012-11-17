@@ -1,0 +1,69 @@
+<?php echo $this->doctype();echo "\n"; ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php echo $this->headTitle();echo "\n";?>
+<?php echo $this->headMeta();echo "\n"; ?>
+<?php echo $this->headLink();echo "\n";?>
+<?php echo $this->headScript();echo "\n";?>
+</head>
+<body>
+
+<div class="navbar navbar-inverse navbar-static-top">
+	<div class="navbar-inner">
+	<button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <div class="nav-collapse collapse" style="height: 0px;">
+      	<ul class="nav">
+			<li <?php if($this->active == 1) echo 'class="active"'; ?>><a href="/">Quiero una farmacia</a></li>
+			<li <?php if($this->active == 2) echo 'class="active"'; ?>><a href="/farmacias/">Farmacias</a></li>
+			<li <?php if($this->active == 3) echo 'class="active"'; ?>><a class="medicamento" href="/medicamentos/">Medicamentos</a></li>
+		</ul>
+      	<ul class="nav pull-right">
+      		<?php if(!isset($_SESSION["sys_usuario"])){ ?>
+			<li <?php if($this->active == 4) echo 'class="active"'; ?>><a class="gris" href="/registro/">Registro</a></li>
+			<li <?php if($this->active == 5) echo 'class="active"'; ?>><a class="gris" href="/registro/index/login/">Iniciar sesión</a></li>
+			<?php }else{ ?>
+			<li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $_SESSION["sys_usuario"]->email; ?> <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+			  		<li><a href="/registro/index/logout/">Salir</a></li>
+                </ul>
+			</li>
+			<?php } ?>
+		</ul>
+    </div>
+
+	</div>
+	<div class="clearfix"></div>
+</div>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+
+	    <?php echo $this->layout()->content ?>
+
+	</div>
+</div>
+
+<footer>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span6 offset3">
+				<span class="muted">© 2012 quieromifarmacia</span>
+				<a href="#">¿Que es esto?</a>
+				<a href="#">Preguntas frecuentes</a>
+				<a href="#">Contáctanos</a>
+			</div>
+		</div>
+	</div>
+
+</footer>
+
+</body>
+</html>
+

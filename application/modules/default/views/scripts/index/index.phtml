@@ -1,0 +1,105 @@
+<div class="bg-header">
+	<div class="span6 offset3">
+
+		<div class="logo">
+			<img src="/img/layout/quieromifarmacia.jpg" alt="Quiero mi Farmacia" />
+		</div>
+		<div class="ubicacion">
+                    <h4 ><span style="color: #ccc">Tu ubicación:</span> <?php echo $this->comuna->nombre?> <a href="#" style="font-size: 11px" id="cambiar-comuna">Cambiar</a></h4>
+			<input type="hidden" id="comuna" class="input-xlarge" value="<?php echo $this->comuna->nombre_slug?>"  />
+		</div>
+
+	</div>
+</div>
+
+<div class="row-fluid buscador-portada">
+	<div class="span3 offset3 box-left">
+		<img src="/img/portada/logo-farmacias.png" alt="Farmacias" />
+		<div class="linea-right"></div>
+
+	    <div class="control-group">
+	        <div class="controls row-fluid">
+	          	<div class="span12 row">
+                            <select class="span12" id="opcion_listado" onchange="$('#op').val(this.value);">
+                                    <option value="" >Mejor evaluadas</option>
+                                    <option value="denuncias">Más denunciadas</option>
+                                    <option value="comentarios">Más comentadas</option>
+                            </select>
+                            <input type="hidden" id="op" value=""/>
+	          	</div>
+	        </div>
+	        <div class="controls row-fluid">
+	          	<div class="span12 row">
+					<button id="submit_farm" class="span8 offset2 btn btn-large btn-farmacia" onclick="actualizar_listado()">Buscar</button>
+	          	</div>
+	        </div>
+	    </div>
+	</div>
+	<div class="span3 box-right">
+		<img src="/img/portada/logo-medicamentos.png" alt="Medicamentos" />
+		<div class="linea-right"></div>
+
+		<div class="control-group">
+	         <form method="post" id="frm_medi" action="/medicamentos/">
+                     <div class="controls row-fluid">
+	          	<div class="span12 row">
+                           
+	          		<input type="text" class="span12" name="valor" placeholder="Nombre del medicamento" />
+                            
+	          	</div>
+	        </div>
+	        <!--div class="controls row-fluid">
+	          	<div class="span12 row">
+	          		<select class="span12">
+						<option value="">Mayor a menor precio</option>
+						<option value="">Menor a mayor precio</option>
+					</select>
+	          	</div>
+	        </div-->
+	        <div class="controls row-fluid">
+	          	<div class="span12 row">
+                            <button class="span8 offset2 btn btn-large btn-medicamento" type="submit">Buscar</button>
+	          	</div>
+	        </div>
+                </form>
+	    </div>
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="info">
+		Para comentar, evaluar y denuncuar farmacias<br />
+		debes <a href="/registro/index/login/">Iniciar sesión</a> o bien <a href="/registro/">Registrarte</a>
+	</div>
+</div>
+<!-- Modal -->
+<div id="modal-cambiar-comuna" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form id="form-cambio-comuna" action="/default/index/cambiar-comuna/" method="post">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Cambiar ubicación</h3>
+  </div>
+  <div class="modal-body">
+      <select class="span6" id="region_sl" style="float: left" onchange="call_comuna(this.value,'comuna_sl')">
+        <option value="">Seleccione su región</option>
+        <?php foreach($this->listado_regiones as $region){?>
+        <option value="<?php echo $region->id ?>"><?php echo $region->nombre ?></option>
+        <?php } ?>
+    </select>
+    <select class="span6" name="comuna" id="comuna_sl" style="float: right" disabled="disabled">
+        <option value="">Seleccione su comuna</option>
+    </select>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <input type="submit" class="btn btn-primary" value="Cambiar ciudad" />
+  </div>
+</form>
+</div>
+
+<script type="text/javascript">
+$("#cambiar-comuna").click(function(e){
+	e.preventDefault();
+	$("#modal-cambiar-comuna").modal({show:true});
+});
+</script>

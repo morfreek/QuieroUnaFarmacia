@@ -1,0 +1,141 @@
+<div class="span6 offset3">
+	<div class="header-farmacias">
+		<h1><img src="/img/layout/logo-farmacia.png" alt="Farmacia" /> farmacias en <?php echo $this->comuna->nombre?> <a href="#" id="cambiar-comuna">Cambiar</a> <?php if(!$this->comuna_original){ ?><a href="/index/mi-ubicacion/" id="cambiar-ubicacion">Mi ubicación</a><?php } ?></h1>
+		<div class="clearfix"></div>
+
+            <select <?php if(count($this->listado_farmacias)<=0){ echo 'disabled="disabled"';}?> id="opcion_listado" onchange="actualizar_listado('<?php echo $this->comuna->nombre_slug?>',this.value)">
+                <option value="" <?php if(!$this->opcion){ echo 'selected="selected"';}?>>Mejor evaluadas</option>
+                <option value="denuncias" <?php if($this->opcion=='denuncias'){ echo 'selected="selected"';}?>>Más denunciadas</option>
+                <option value="comentarios" <?php if($this->opcion=='comentarios'){ echo 'selected="selected"';}?>>Más comentadas</option>
+            </select>
+
+		<div class="btn-group">
+			<button class="btn disabled">Ver como: </button>
+			<button class="btn active" id="list"><i class="icon-th-list"></i> Listado</button>
+			<button class="btn" id="maps"><i class="icon-map-marker"></i> Mapa</button>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+<script type="text/javascript">
+var map;
+$(function(){
+	map = new GMaps({
+	    div: '#mapa',
+        lat: -36.806536,
+        lng: -73.050156
+	});
+<?php foreach($this->listado_farmacias as $farmacia){?>
+	GMaps.geocode({
+        address: '<?php echo $farmacia->direccion?>, <?php echo $farmacia->comuna_nombre?>',
+        callback: function(results, status){
+            if(status=='OK'){
+              	var latlng = results[0].geometry.location;
+              	map.setCenter(latlng.lat(), latlng.lng());
+              	map.addMarker({
+                	lat: latlng.lat(),
+                	lng: latlng.lng(),
+                	icon: "/img/layout/marcador.png",
+                	// click: function(e) {
+						// alert('Seleccionaste el punto');
+					// }
+                    title: '',
+                    infoWindow: {
+                      content: '<p><?php echo $farmacia->nombre?><br/><?php echo $farmacia->direccion?>, <?php echo $farmacia->comuna_nombre?></br><?php echo ($farmacia->indicador_turno)?'<b>Farmacia de Turno</b>':''; ?></p>'
+                    }
+              	});
+            }
+        }
+    });
+<?php } ?>
+    $("#content-mapa").css({"display":"none"});
+});
+</script>
+<div class="span8 offset2">
+    <div class="well" id="content-mapa" style="">
+        <div id="mapa" style="height:300px;"></div>
+    </div>
+    <div id="content-list" style="display:block;">
+        <?php foreach($this->listado_farmacias as $farmacia){?>
+        <div class="media">
+            <a class="pull-left" href="/farmacias/<?php echo $this->comuna->nombre_slug;?>/farmacia/<?php echo $farmacia->nombre_slug?>/">
+                <img class="media-object img-polaroid" src="<?php echo $farmacia->logo?>">
+                <?php if($farmacia->indicador_turno) {?><span class="turno"></span><?php } ?>
+            </a>
+            <div class="media-body">
+                <div class="span3">
+                    <h4 class="media-heading"><a href="/farmacias/<?php echo $this->comuna->nombre_slug;?>/farmacia/<?php echo $farmacia->nombre_slug?>/"><?php echo $farmacia->nombre?></a></h4>
+                    <span class="muted">
+                        <?php echo $farmacia->direccion?><br />
+                        <?php if($farmacia->indicador_turno) { echo $farmacia->fecha_turno->show().'<br />'; } ?>
+                        <?php if($farmacia->indicador_turno) { echo "Horario de turno: ".$farmacia->horario_turno; } ?>
+
+                    </span>
+                </div>
+                <div class="span3 padding-top">
+                    <i class="<?php echo ($farmacia->nota_final>0) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($farmacia->nota_final>1) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($farmacia->nota_final>2) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($farmacia->nota_final>3) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($farmacia->nota_final>4) ? 'icon-star':'icon-star-empty'?>"></i>
+                </div>
+                <div class="span3 padding-top">
+                    <i class="icon-flag"></i> <?php echo $farmacia->numero_denuncias?> Denuncia(s)
+                </div>
+                <div class="span3 padding-top">
+                    <i class="icon-comment"></i> <?php echo $farmacia->numero_comentarios?> Comentario(s)
+                </div>
+            </div>
+        </div>
+        <?php } if(count($this->listado_farmacias)<=0){ ?>
+        <p class="text-error" style="text-align: center; margin-top: 30px; font-size: 20px;">NO SE HAN ENTREGADO DATOS DE FARMACIAS PARA ESTA COMUNA.</p>
+        <?php }?>
+
+        <?php if(count($this->listado_farmacias)>100){?>
+        <div class="pagination pagination-centered">
+            <ul>
+                <li class="disabled"><a href="#">«</a></li>
+                <li class="active"><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">»</a></li>
+            </ul>
+        </div>
+        <?php } ?>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal-cambiar-comuna" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<form id="form-cambio-comuna" action="/default/index/cambiar-comuna/" method="post">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Cambiar ubicación</h3>
+  </div>
+  <div class="modal-body">
+      <select class="span6" id="region_sl" style="float: left" onchange="call_comuna(this.value,'comuna_sl')">
+        <option value="">Seleccione su región</option>
+        <?php foreach($this->listado_regiones as $region){?>
+        <option value="<?php echo $region->id ?>"><?php echo $region->nombre ?></option>
+        <?php } ?>
+    </select>
+    <select class="span6" name="comuna" id="comuna_sl" style="float: right" disabled="disabled">
+        <option value="">Seleccione su comuna</option>
+    </select>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+    <input type="submit" class="btn btn-primary" value="Cambiar ciudad" />
+  </div>
+</form>
+</div>
+
+<script type="text/javascript">
+$("#cambiar-comuna").click(function(e){
+	e.preventDefault();
+	$("#modal-cambiar-comuna").modal({show:true});
+});
+</script>

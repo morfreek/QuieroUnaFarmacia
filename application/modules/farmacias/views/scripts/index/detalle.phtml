@@ -1,0 +1,256 @@
+<div class="span8 offset2">
+	<ul class="pager">
+		<li><a href="/farmacias/">&larr; Volver al listado</a></li>
+	</ul>
+	<div class="media detalle-farmacia">
+		<a class="pull-left" href="#">
+			<img class="media-object img-polaroid" src="http://placehold.it/128x128">
+		</a>
+		<div class="media-body">
+			<div class="span8">
+				<h2 class="media-heading"><?php echo $this->farmacia->nombre?></h2>
+				<span class="muted">
+					<?php echo $this->farmacia->direccion?><br />
+					<?php if($this->farmacia->indicador_turno){?>
+                                        Esta farmacia está de turno <a class="btn-denunciar" href="#">(reportar incumplimiento)</a><br />
+                                        Horario: <?php echo $this->farmacia->horario_turno;?> 
+                                        <?php } ?>
+				</span>
+			</div>
+			<div class="span4 padding">
+				<button class="btn btn-calificar" value="1">
+					<i class="<?php echo ($this->farmacia->nota_final>0) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($this->farmacia->nota_final>1) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($this->farmacia->nota_final>2) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($this->farmacia->nota_final>3) ? 'icon-star':'icon-star-empty'?>"></i>
+                    <i class="<?php echo ($this->farmacia->nota_final>4) ? 'icon-star':'icon-star-empty'?>"></i>
+				</button>
+				<button class="btn btn-farmacia btn-denunciar" value="1"><i class="icon-white icon-flag"></i> Denunciar</button>
+				<button class="btn btn-medicamento btn-comentar" value="1"><i class="icon-white icon-comment"></i> Comentar</button>
+			</div>
+		</div>
+	</div>
+	<div class="media"></div>
+	<div class="clearfix"></div>
+
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#ubicacion" data-toggle="tab"><i class="icon-map-marker"></i> Mapa de ubicación</a></li>
+		<li><a href="#denuncias" data-toggle="tab"><i class="icon-flag"></i> <?php echo count($this->farmacia->listar_denuncias());#$this->farmacia->numero_denuncias ?> Denuncia(s)</a></li>
+		<li><a href="#comentarios" data-toggle="tab"><i class="icon-comments"></i> <?php echo count($this->farmacia->listar_comentarios());#$this->farmacia->numero_comentarios ?> Comentario (s)</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane active" id="ubicacion">
+        <script type="text/javascript">
+            var map;
+            $(function(){
+                map = new GMaps({
+                    div: '#mapa',
+                    lat: -36.806536,
+                    lng: -73.050156
+                });
+                GMaps.geocode({
+                    address: '<?php echo $this->farmacia->direccion?>, <?php echo $this->farmacia->comuna_nombre?>',
+                    callback: function(results, status){
+                        if(status=='OK'){
+                            var latlng = results[0].geometry.location;
+                            map.setCenter(latlng.lat(), latlng.lng());
+                            map.addMarker({
+                                lat: latlng.lat(),
+                                lng: latlng.lng(),
+                                icon: "/img/layout/marcador.png",
+                                // click: function(e) {
+                                    // alert('Seleccionaste el punto');
+                                // }
+                                title: '',
+                                infoWindow: {
+                                  content: '<p><?php echo $this->farmacia->nombre?><br/><?php echo $this->farmacia->direccion?>, <?php echo $farmacia->comuna_nombre?></br><?php echo ($farmacia->indicador_turno)?'<b>Farmacia de Turno</b>':''; ?></p>'
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        </script>
+            <div id="mapa" style="height:300px;"></div>
+		</div>
+		<div class="tab-pane" id="denuncias">
+            <?php foreach($this->farmacia->listar_denuncias() as $denuncia){?>
+			<div class="media">
+				<a class="pull-left" href="#">
+					<img class="media-object img-polaroid" src="http://placehold.it/64x64">
+				</a>
+				<div class="media-body">
+                                        <?php if($this->farmacia->imagen){?><img src="http://placehold.it/170x115" alt="Foto denuncia" class="pull-right img-polaroid" /><?php } ?>
+					<h4 class="media-heading">Nombre de la persona</h4>
+					<span class="muted">Denuncia: </span><?php echo $denuncia->motivo?>					
+					<br />
+					<?php echo $denuncia->descripcion?><br />
+					<small>Publicado el <?php echo $denuncia->fecha_registro->show();?></small>
+				</div>
+			</div>
+                    <?php }if(count($this->farmacia->listar_denuncias)<=0){ ?>
+                    <div class="media">
+                        <p style="text-align: center">No se han registrado denuncias</p>
+                    </div>
+                    <?php } ?> 		
+			<div class="media"></div>
+		</div>
+		<div class="tab-pane" id="comentarios">
+            <?php foreach($this->farmacia->listar_comentarios() as $comentario){?>
+			<div class="media">
+				<a class="pull-left" href="#">
+					<img class="media-object img-polaroid" src="http://placehold.it/64x64">
+				</a>
+				<div class="media-body">
+					<h4 class="media-heading"><?php echo $comentario->usuario; ?></h4>
+					<?php echo nl2br($comentario->texto);?><br />
+					<small>Publicado el <?php echo $comentario->fecha_registro->show();?></small>
+				</div>
+			</div>
+            <?php }if(count($this->farmacia->listar_comentarios)<=0){ ?>
+            <div class="media">
+                <p style="text-align: center">No se han registrado comentarios</p>
+            </div>
+            <?php } ?>
+			<div class="media"></div>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+        <?php if(count($this->listado_farmacias)>0){ ?>
+	<h4 class="muted">Otras farmacias en la comuna </h4>
+        <?php foreach($this->listado_farmacias as $farmacia){ ?>
+	<div class="media">
+		<a class="pull-left" href="/farmacias/<?php echo $farmacia->nombre_slug;?>/farmacia/<?php echo $farmacia->nombre_slug?>/">
+			<img class="media-object img-polaroid" src="<?php echo $farmacia->logo;?>">
+			<?php if($farmacia->indicador_turno){?><span class="turno"></span><?php } ?>
+		</a>
+		<div class="media-body">
+			<div class="span3">
+				<h4 class="media-heading"><a href="/farmacias/<?php echo $farmacia->nombre_slug;?>/farmacia/<?php echo $farmacia->nombre_slug?>/"><?php echo $farmacia->nombre;?></a></h4>
+				<span class="muted">
+					<?php echo $farmacia->direccion;?><br />
+                                        <?php if($farmacia->indicador_turno){ echo 'Horario de turno: '.$farmacia->horario_turno;  } ?><br />
+				</span>
+			</div>
+			<div class="span3 padding-top">
+                            
+				<i class="<?php echo ($farmacia->nota_final>0) ? 'icon-star':'icon-star-empty'?>"></i>
+				<i class="<?php echo ($farmacia->nota_final>1) ? 'icon-star':'icon-star-empty'?>"></i>
+				<i class="<?php echo ($farmacia->nota_final>2) ? 'icon-star':'icon-star-empty'?>"></i>
+				<i class="<?php echo ($farmacia->nota_final>3) ? 'icon-star':'icon-star-empty'?>"></i>
+				<i class="<?php echo ($farmacia->nota_final>4) ? 'icon-star':'icon-star-empty'?>"></i>
+			</div>
+			<div class="span3 padding-top">
+				<i class="icon-flag"></i> <?php echo $farmacia->numero_denuncias;?> Denuncia(s)
+			</div>
+			<div class="span3 padding-top">
+				<i class="icon-comment"></i> <?php echo $farmacia->numero_comentarios;?> Comentario(s)
+			</div>
+		</div>
+	</div>
+        <?php } ?>
+	<div class="media"></div>
+        <?php } ?>
+</div>
+
+<!-- Modal -->
+<div id="modal-calificar" class="modal hide fade" role="dialog" aria-labelledby="modal-calificar-label" aria-hidden="true">
+<form id="form-calificar" action="/index/calificar/" method="post" class="form-horizontal">
+	<input type="hidden" name="id_farmacia" value="<?php echo $this->farmacia->id; ?>" />
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="modal-calificar-label">Calificar farmacia</h3>
+	</div>
+  	<div class="modal-body">
+  		<div class="control-group">
+            <?php if($this->usuario){ ?>
+			<label class="control-label" for="nota">Nota</label>
+			<div class="controls">
+			  	<select id="nota" name="nota" class="input-xlarge">
+			  		<!--<option value="" disabled selected>Seleccionar</option>-->
+			  		<option value="1">1</option>
+			  		<option value="2">2</option>
+			  		<option value="3">3</option>
+			  		<option value="4">4</option>
+			  		<option value="5">5</option>
+			  	</select>
+			</div>
+            <?php }else{ ?>
+            <p class="text-error" style="text-align: center; margin-top: 30px; font-size: 20px;">DEBE INICIAR SECIÓN PARA PODER CALIFICAR.<br /><a href="/registro/index/login/">iniciar seción</a></p>
+            <?php } ?>
+		</div>
+  	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        <?php if($this->usuario){ ?>
+		<input type="submit" class="btn btn-primary" value="Calificar" />
+        <?php } ?>
+	</div>
+</form>
+</div>
+
+<div id="modal-denunciar" class="modal hide fade" role="dialog" aria-labelledby="modal-denunciar-label" aria-hidden="true">
+<form id="form-denunciar" action="/index/denunciar/" method="post">
+	<input type="hidden" name="id_farmacia" value="<?php echo $this->farmacia->id; ?>" />
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="modal-denunciar-label">Denunciar farmacia</h3>
+	</div>
+	<div class="modal-body">
+        <?php if($this->usuario){ ?>
+		<select name="motivo" class="span6">
+			<!--<option value="" selected disabled>Seleccionar motivo</option>-->
+			<option value="1" selected >Mal servicio </option>
+			<option value="2" >Incumplimiento de turno</option>
+		</select><br />
+		<textarea name="comentario" id="comentario" rows="5" cols="10" class="span12" placeholder="Describa denuncia"></textarea>
+        <!--<input type="file" name="archivo" />-->
+        <?php }else{ ?>
+        <p class="text-error" style="text-align: center; margin-top: 30px; font-size: 20px;">DEBE INICIAR SECIÓN PARA PODER DENUNCIAR.<br /><a href="/registro/index/login/">iniciar seción</a></p>
+        <?php } ?>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        <?php if($this->usuario){ ?>
+		<input type="submit" class="btn btn-primary" value="Denunciar" />
+        <?php } ?>
+	</div>
+</form>
+</div>
+
+<div id="modal-comentar" class="modal hide fade" role="dialog" aria-labelledby="modal-comentar-label" aria-hidden="true">
+<form id="form-comentar" action="/index/comentar/" method="post">
+	<input type="hidden" name="id_farmacia" value="<?php echo $this->farmacia->id; ?>" />
+    <?php if($this->usuario){ ?>
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="modal-comentar-label">Comentar sobre <?php echo $this->farmacia->nombre?></h3>
+	</div>
+	<div class="modal-body">
+		<textarea name="comentario" id="comentario" rows="5" cols="10" class="span12" placeholder="Describa Comentario"></textarea>
+	</div>
+    <?php }else{ ?>
+    <p class="text-error" style="text-align: center; margin-top: 30px; font-size: 20px;">DEBE INICIAR SECIÓN PARA PODER COMENTAR.<br /><a href="/registro/index/login/">iniciar seción</a></p>
+    <?php } ?>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+        <?php if($this->usuario){ ?>
+		<input type="submit" class="btn btn-primary" value="Comentar" />
+        <?php } ?>
+	</div>
+</form>
+</div>
+
+<script type="text/javascript">
+$(".btn-calificar").click(function(){
+	$("#modal-calificar").modal({show:true});
+});
+$(".btn-denunciar").click(function(){
+	$("#modal-denunciar").modal({show:true});
+});
+$(".btn-comentar").click(function(){
+	$("#modal-comentar").modal({show:true});
+});
+</script>

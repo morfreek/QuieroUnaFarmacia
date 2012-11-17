@@ -1,0 +1,33 @@
+<div class="span6 offset3">
+	<div class="header-medicamentos">
+		<h1><img src="/img/layout/logo-medicamentos.png" alt="Medicamentos" /> Medicamentos</h1>
+		<div class="clearfix"></div>
+                <form method="post" action="">
+                    <div class="input-append">
+                      <input type="text" name="valor" value="<?php echo $this->valor;?>" id="medicamento" class="span10" placeholder="Medicamento, laboratorio, droga o tratamiento" />
+                      <button class="btn" type="submit">Buscar</button>
+                    </div>
+                </form>
+	</div>
+	<div class="clearfix"></div>
+</div>
+
+<div class="span8 offset2">
+    <table class="table table table-condensed table-hover">
+    	<tr>
+    		<th>Droga</th>
+    		<th>Medicamento</th>
+    		<th>Laboratorio</th>
+    		<th>Uso/Tratamiento</th>
+    	</tr>
+        <?php foreach($this->listado as $medicamento){ ?>
+    	<tr>
+    		<td><a href="/medicamentos/<?php echo $medicamento->id?>/"><?php echo $medicamento->principio_nombre?></a></td>
+    		<td><a href="#"><?php echo $medicamento->producto?></a></td>
+    		<td><span class="muted"><?php echo $medicamento->laboratorio_nombre;?></span></td>
+    		<td><span class="muted"><?php echo $medicamento->tratamiento_nombre;?></span></td>
+    	</tr>
+        <?php }?>
+    </table>
+
+</div>
