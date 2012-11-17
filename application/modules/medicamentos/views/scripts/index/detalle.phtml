@@ -1,0 +1,33 @@
+<div class="span8 offset2 detalle-medicamentos">
+	<ul class="pager">
+		<li><a href="/medicamentos/">&larr; Volver al listado</a></li>
+	</ul>
+	<h1 class="rojo"><?php echo $this->medicamento->producto;?></h1>
+	<dl class="dl-horizontal">
+		<dt>Laboratorio</dt>
+		<dd><?php echo $this->medicamento->laboratorio_nombre;?></dd>
+		<dt>Drogas</dt>
+		<dd><?php echo $this->medicamento->principio_nombre;?></dd>		
+		<dt>Uso/tratamiento</dt>
+		<dd><?php echo $this->medicamento->tratamiento_nombre;?></dd>
+	</dl>
+	<div class="clearfix"></div>
+
+	<h4 class="muted">Medicamentos bioequivalentes</h4>
+	<table class="table table table-condensed table-hover">
+    	<tr>
+    		<th>Droga</th>
+    		<th>Medicamento</th>
+    		<th>Laboratorio</th>
+    		<th>Uso/Tratamiento</th>
+    	</tr>
+        <?php foreach($this->medicamento->listar_bio($this->medicamento->principio_slug) as $medicamento){?>
+    	<tr>
+    		<td><a href="/medicamentos/<?php echo $medicamento->id?>/"><?php echo $medicamento->principio_nombre?></a></td>
+    		<td><a href="#"><?php echo $medicamento->producto?></a></td>
+    		<td><span class="muted"><?php echo $medicamento->laboratorio_nombre;?></span></td>
+    		<td><span class="muted"><?php echo $medicamento->tratamiento_nombre;?></span></td>
+    	</tr>
+        <? } ?>    	
+    </table>
+</div>

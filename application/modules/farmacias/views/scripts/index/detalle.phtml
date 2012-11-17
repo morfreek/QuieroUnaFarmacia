@@ -86,10 +86,10 @@
 					<span class="muted">Denuncia: </span><?php echo $denuncia->motivo?>					
 					<br />
 					<?php echo $denuncia->descripcion?><br />
-					<small>Publicado el <?php echo $denuncia->fecha_registro->show();?></small>
+					<small>Publicado el <?php echo $denuncia->fecha_registro->show("short_time");?></small>
 				</div>
 			</div>
-                    <?php }if(count($this->farmacia->listar_denuncias)<=0){ ?>
+                    <?php }if(count($this->farmacia->listar_denuncias())<=0){ ?>
                     <div class="media">
                         <p style="text-align: center">No se han registrado denuncias</p>
                     </div>
@@ -108,7 +108,7 @@
 					<small>Publicado el <?php echo $comentario->fecha_registro->show();?></small>
 				</div>
 			</div>
-            <?php }if(count($this->farmacia->listar_comentarios)<=0){ ?>
+            <?php }if(count($this->farmacia->listar_comentarios())<=0){ ?>
             <div class="media">
                 <p style="text-align: center">No se han registrado comentarios</p>
             </div>
